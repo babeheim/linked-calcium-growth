@@ -12,10 +12,10 @@ data {
   real<lower=0> l_sex_sigma_rate;
   real<lower=0> b_mu;
   real<lower=0> b_sigma;
-  real k_pop_mu;
-  real<lower=0> k_pop_sigma;
-  real<lower=0> k_ind_sigma_rate;
-  real<lower=0> k_sex_sigma_rate;
+  real d_pop_mu;
+  real<lower=0> d_pop_sigma;
+  real<lower=0> d_ind_sigma_rate;
+  real<lower=0> d_sex_sigma_rate;
   real<lower=0> s_rate;
 }
 parameters {
@@ -26,16 +26,17 @@ parameters {
   vector[N_ind] l_ind;
   real<lower=0> b;
   vector[N_ind] t0;
-  real k_pop;
-  real<lower=0> k_sex_sigma;
-  vector[2] k_sex;
-  real<lower=0> k_ind_sigma;
-  vector[N_ind] k_ind;
+  real d_pop;
+  real<lower=0> d_sex_sigma;
+  vector[2] d_sex;
+  real<lower=0> d_ind_sigma;
+  vector[N_ind] d_ind;
   real<lower=0> s;
 }
 model {
   vector[N_ind] l;
   vector[N_obs] theta;
+  vector[N_ind] d;
   vector[N_ind] k;
   vector[N_obs] m;
   l_pop ~ normal(l_pop_mu, l_pop_sigma);
@@ -44,19 +45,20 @@ model {
   l_sex_sigma ~ exponential(l_sex_sigma_rate);
   l_sex ~ std_normal();
   b ~ normal(b_mu, b_sigma) T[0, ];
-  k_pop ~ normal(k_pop_mu, k_pop_sigma);        // on the log scale
-  k_ind_sigma ~ exponential(k_ind_sigma_rate);  // on the log scale
-  k_ind ~ std_normal();                         // on the log scale
-  k_sex_sigma ~ exponential(k_sex_sigma_rate);  // on the log scale
-  k_sex ~ std_normal();                         // on the log scale
+  d_pop ~ normal(d_pop_mu, d_pop_sigma);        // on the log scale
+  d_ind_sigma ~ exponential(d_ind_sigma_rate);  // on the log scale
+  d_ind ~ std_normal();                         // on the log scale
+  d_sex_sigma ~ exponential(d_sex_sigma_rate);  // on the log scale
+  d_sex ~ std_normal();                         // on the log scale
   s ~ exponential(s_rate);
   for (j in 1:N_ind) {
     l[j] = l_pop +
       l_sex[sex[j]] * l_sex_sigma +
       l_ind[j] * l_ind_sigma;
-    k[j] = exp(k_pop +
-      k_sex[sex[j]] * k_sex_sigma +
-      k_ind[j] * k_ind_sigma);
+    d[j] = exp(d_pop +
+      d_sex[sex[j]] * d_sex_sigma +
+      d_ind[j] * d_ind_sigma);
+    k[j] = log(2)/d[j];
   }
   t0 ~ logistic(l, 1/b);
   for (i in 1:N_obs) {
@@ -71,13 +73,15 @@ model {
 }
 generated quantities {
   vector[N_ind] l;
+  vector[N_ind] d;
   vector[N_ind] k;
   for (j in 1:N_ind) {
     l[j] = l_pop +
       l_sex[sex[j]] * l_sex_sigma +
       l_ind[j] * l_ind_sigma;
-    k[j] = exp(k_pop +
-      k_sex[sex[j]] * k_sex_sigma +
-      k_ind[j] * k_ind_sigma);
+    d[j] = exp(d_pop +
+      d_sex[sex[j]] * d_sex_sigma +
+      d_ind[j] * d_ind_sigma);
+    k[j] = log(2)/d[j];
   }
 }

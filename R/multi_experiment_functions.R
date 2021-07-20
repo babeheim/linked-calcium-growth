@@ -1,7 +1,8 @@
 
 rename_experiments <- function(path = "experiments") {
 
-  files <- list.files(path, pattern="*.R$", full.names = TRUE, recursive = TRUE)
+  files <- list.files(path, pattern="*.R$",
+    full.names = TRUE, recursive = TRUE)
 
   rename_counter <- 0
   unchanged_counter <- 0
@@ -25,7 +26,8 @@ rename_experiments <- function(path = "experiments") {
 
 inventory_experiments <- function(path = "experiments") {
 
-  experiment_files <- list.files(path, pattern="*.R$", full.names = TRUE, recursive = TRUE)
+  experiment_files <- list.files(path, pattern="*.R$",
+    full.names = TRUE, recursive = TRUE)
 
   experiments <- list()
   sim <- list()
@@ -70,26 +72,29 @@ prep_experiments <- function(files, run_system, exp_seed) {
       if (this_experiment$n_runs > 1 | is.na(this_experiment$seed)) {
         this_run$seed <- my_seeds[j]
       }
-      this_run$name <- paste(gsub(".R", "", basename(files[i])), this_run$seed, sep = "-")
+      this_run$name <- paste(gsub(".R", "", basename(files[i])),
+        this_run$seed, sep = "-")
       out <- c(out, list(this_run))
     }
   }
   return(out)
 }
 
-run_experiments <- function(n_threads = 1, this_system = NA, fit_models = TRUE, seed = 1) {
+run_experiments <- function(path = "results", n_threads = 1,
+  this_system = NA, fit_models = TRUE, seed = 1) {
   # wrapper for batches of experiment files to run at once
   if (is.na(this_system)) stop("please give the name of the computer you are using")
-  if (!dir.exists("results")) stop("results folder must exist first!")
+  if (!dir.exists(path)) stop("results folder must exist first!")
 
   # load the parameters of all pending experiments and prep them
-  experiment_files <- list.files("experiments", full.names = TRUE, recursive = TRUE, pattern = "*.R$")
+  experiment_files <- list.files("experiments", full.names = TRUE,
+    recursive = TRUE, pattern = "*.R$")
   experiments <- prep_experiments(experiment_files, this_system, exp_seed = seed)
   experiment_names <- unlist(lapply(experiments, function(z) z[["name"]]))
   experiment_hashes <- substr(experiment_names, 1, 11)
 
   # compare experiment list to existing results
-  completed_files <- list.files("results", full.names = FALSE)
+  completed_files <- list.files(path, full.names = FALSE)
   completed_names <- gsub("\\.rds", "", basename(completed_files))
   completed_hashes <- substr(completed_names, 1, 11)
   drop <- which(experiment_hashes %in% completed_hashes)
@@ -103,7 +108,7 @@ run_experiments <- function(n_threads = 1, this_system = NA, fit_models = TRUE, 
     function(i) {
       out <- run_experiment(experiments[[i]], fit_models = fit_models)
       outname <- paste0(experiments[[i]]$name, ".rds")
-      saveRDS(out, file.path("results", outname))
+      saveRDS(out, file.path(path, outname))
       print(outname)
     },
     mc.cores = n_threads
@@ -116,7 +121,8 @@ run_experiments <- function(n_threads = 1, this_system = NA, fit_models = TRUE, 
 
 write_results_reports <- function(path = "results") {
 
-  files <- list.files(path, pattern="*.rds$", full.names = TRUE, recursive = TRUE)
+  files <- list.files(path, pattern="*.rds$",
+    full.names = TRUE, recursive = TRUE)
 
   tabular <- vector("list", length(files))
   ppl <- vector("list", length(files))
@@ -131,7 +137,8 @@ write_results_reports <- function(path = "results") {
     # summarize fits and export
     tabular[[i]] <- summarize_experiment(res)
     tabular[[i]]$experiment <- res$name
-    write.csv(tabular[[i]], file.path(dir_name, paste0(res$name, ".csv")), row.names = FALSE)
+    write.csv(tabular[[i]], file.path(dir_name, paste0(res$name, ".csv")),
+      row.names = FALSE)
 
     # save ppl and obs from experiment
     ppl[[i]] <- res$data$people
@@ -144,7 +151,8 @@ write_results_reports <- function(path = "results") {
     res$longitudinal <- res$sim$longitudinal
     obs[[i]]$longitudinal <- res$longitudinal
     ppl[[i]]$longitudinal <- res$longitudinal
-    pars[[i]] <- list.remove(res, c("data", "estimates", "diagnostics", "summaries", "sim", "stan"))
+    pars[[i]] <- list.remove(res, c("data", "estimates", "diagnostics",
+      "summaries", "sim", "stan"))
 
     write.csv(ppl[[i]], file.path(dir_name, "people.csv"), row.names = FALSE)
     write.csv(obs[[i]], file.path(dir_name, "observations.csv"), row.names = FALSE)
@@ -166,4 +174,3 @@ write_results_reports <- function(path = "results") {
   write.csv(out, file.path(path, "parameters.csv"), row.names = FALSE)
 
 }
-

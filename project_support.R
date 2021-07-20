@@ -1,6 +1,4 @@
 
-set.seed(1)
-
 ##### project libraries #####
 
 library(dplyr)
@@ -8,7 +6,7 @@ library(parallel)
 library(posterior)
 library(bayesplot)
 library(tictoc)
-library(rethinking)
+library(rethinking) # https://github.com/rmcelreath/rethinking
 library(jsonlite)
 library(testthat)
 library(knitr)
@@ -17,9 +15,16 @@ library(brms)
 library(cmdstanr)
 library(digest)
 library(rlist)
+library(tikzDevice)
 
 ##### global parameters #####
 
+this_system <- "local-imac"
+n_threads <- 2
+my_seed <- 1
+results_folder <- "./results"
+
+set.seed(my_seed)
 rstan_options(javascript = FALSE)
 options(warnPartialMatchDollar=TRUE)
 
@@ -37,4 +42,5 @@ for (i in 1:length(stan_files)) {
 source("R/misc_functions.R")
 source("R/simulation_functions.R")
 source("R/single_experiment_functions.R")
+source("R/summarize_experiment_functions.R")
 source("R/multi_experiment_functions.R")

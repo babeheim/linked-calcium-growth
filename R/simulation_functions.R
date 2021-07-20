@@ -12,26 +12,27 @@ sim_cac <- function(pars) {
 
   if (!hasName(pars, "seed")) stop("seed must be NA or specified")
   if (!hasName(pars, "longitudinal")) stop("longitudinal flag must be specified")
+  if (pars$N_ind <= 0 | pars$N_ind %% 1 != 0) stop("invalid N_ind")
   if (is.na(pars$seed)) pars$seed <- sample(1:1000, 1)
 
   set.seed(pars$seed)
 
   pars$l_pop <- rnorm(1, pars$l_pop_mu, pars$l_pop_sigma)
 
-  pars$k_pop <- rnorm(1, pars$k_pop_mu, pars$k_pop_sigma)
+  pars$d_pop <- rnorm(1, pars$d_pop_mu, pars$d_pop_sigma)
 
   if (pars$b_mu <= 0) stop("b_mu must be positive")
   pars$b <- trnorm(1, pars$b_mu, pars$b_sigma)
   pars$v <- 1/pars$b
 
   pars$l_sex <- rnorm(2, 0, pars$l_sex_sigma)
-  pars$k_sex <- rnorm(2, 0, pars$k_sex_sigma)
+  pars$d_sex <- rnorm(2, 0, pars$d_sex_sigma)
 
   pars$l_ind <- rep(NA, pars$N_ind)
   pars$l <- rep(NA, pars$N_ind)
   pars$t0 <- rep(NA, pars$N_ind)
-  pars$k_ind <- rep(NA, pars$N_ind)
-  pars$k <- rep(NA, pars$N_ind)
+  pars$d_ind <- rep(NA, pars$N_ind)
+  pars$d <- rep(NA, pars$N_ind)
 
   sim <- list()
 
@@ -53,11 +54,12 @@ sim_cac <- function(pars) {
     pars$t0[i] <- rlogis(1, pars$l[i], pars$v)
     # assumption: no one can have a t0 before being born
     if (pars$t0[i] < (-5)) pars$t0[i] <- (-5)
-    pars$k_ind[i] <- rnorm(1, 0, pars$k_ind_sigma)
-    pars$k[i] <- exp(pars$k_pop +
-      pars$k_sex[dat$sex] +
-      pars$k_ind[i])
+    pars$d_ind[i] <- rnorm(1, 0, pars$d_ind_sigma)
+    pars$d[i] <- exp(pars$d_pop +
+      pars$d_sex[dat$sex] +
+      pars$d_ind[i])
     # assumption: no one can have negative growth (log link)
+    pars$k <- log(2)/pars$d
     # calculate cac over lifespan
     dat$cac <- rep(0, length(dat$age))
     dat$growth_rate <- rep(NA, length(dat$age))
@@ -67,6 +69,7 @@ sim_cac <- function(pars) {
       dat$cac[growing] <- exp(dat$growth_rate[growing] * (dat$age_su[growing] - pars$t0[i]) +
         rnorm(length(growing), 0, pars$s))
     }
+    if (any(dat$cac == "Inf")) stop("infinite CAC growth!")
     # record results
     dat$cac_start_age <- pars$t0[i] * 10 + 50
     dat$obs_cohort <- dat$year_of_birth + dat$age
