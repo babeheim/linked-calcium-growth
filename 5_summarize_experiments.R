@@ -71,7 +71,7 @@ out <- insert_row(out, 11, "Study Size")
 
 out[,1] <- gsub("N_exp", "Total Studies", out[,1])
 out[,1] <- gsub("ind_var_off", "\\\\hspace{3 mm} No Variation", out[,1])
-out[,1] <- gsub("ind_var", "\\\\hspace{3 mm} $\\\\pm$ 3 years on $t_0$", out[,1])
+out[,1] <- gsub("ind_var", "\\\\hspace{3 mm} Variation on $t_0$, $d$", out[,1])
 out[,1] <- gsub("sex_off", "\\\\hspace{3 mm} No sex differences", out[,1])
 out[,1] <- gsub("sex_t0", "\\\\hspace{3 mm} Sex difference in $t_0$", out[,1])
 out[,1] <- gsub("sex_k", "\\\\hspace{3 mm} Sex difference in $t_0$, $d$", out[,1])
@@ -458,19 +458,19 @@ model_bias_table$d_mean_bias_p <- paste0("P=", model_bias_table$d_mean_bias_p)
 model_bias_table$d_male_effect_bias_p <- paste0("P=", model_bias_table$d_male_effect_bias_p)
 
 tar <- which(model_bias_table$t0_mean_bias_p == "P=0.000")
-model_bias_table$t0_mean_bias_p[tar] <- "P<0.001"
+model_bias_table$t0_mean_bias_p[tar] <- "P$<$0.001"
 tar <- which(model_bias_table$t0_male_effect_bias_p == "P=0.000")
-model_bias_table$t0_male_effect_bias_p[tar] <- "P<0.001"
+model_bias_table$t0_male_effect_bias_p[tar] <- "P$<$0.001"
 
 tar <- which(model_bias_table$d_mean_bias_p == "P=0.000")
-model_bias_table$d_mean_bias_p[tar] <- "P<0.001"
+model_bias_table$d_mean_bias_p[tar] <- "P$<$0.001"
 tar <- which(model_bias_table$d_male_effect_bias_p == "P=0.000")
-model_bias_table$d_male_effect_bias_p[tar] <- "P<0.001"
+model_bias_table$d_male_effect_bias_p[tar] <- "P$<$0.001"
 
 tar <- which(model_bias_table$k_mean_bias_p == "P=0.000")
-model_bias_table$k_mean_bias_p[tar] <- "P<0.001"
+model_bias_table$k_mean_bias_p[tar] <- "P$<$0.001"
 tar <- which(model_bias_table$k_male_effect_bias_p == "P=0.000")
-model_bias_table$k_male_effect_bias_p[tar] <- "P<0.001"
+model_bias_table$k_male_effect_bias_p[tar] <- "P$<$0.001"
 
 # clean up the NaN values
 model_bias_table$t0_mean_bias_se <- gsub("NaN|NA", "-", model_bias_table$t0_mean_bias_se)
@@ -556,13 +556,13 @@ calcs$biasLHLNCrossSexOnsetP <- model_bias_table[tar,]$t0_male_effect_bias_p
 
 # rename models
 model_bias_table$model <- case_when(
-  model_bias_table$model == "glm_hurdle" ~ "logit(Pr(CAC\\,>\\,0))",
-  model_bias_table$model == "hurdle_full" ~ "logit(Pr(CAC\\,>\\,0))$_i$ ",
+  model_bias_table$model == "glm_hurdle" ~ "logit(Pr(CAC\\,$>$\\,0))",
+  model_bias_table$model == "hurdle_full" ~ "logit(Pr(CAC\\,$>$\\,0))$_i$ ",
   model_bias_table$model == "hurdle_lognormal_full" ~ "hurdle-lognormal$_i$",
   model_bias_table$model == "linked_hurdle_lognormal_full" ~ "linked hurdle-lognormal$_i$",
-  model_bias_table$model == "lognormal_full" ~ "ln(CAC\\,|\\,CAC\\,>\\,0)$_i$",
-  model_bias_table$model == "lm_lognormal" ~ "ln(CAC\\,|\\,CAC\\,>\\,0)",
-  model_bias_table$model == "lm_lognormal_plus1" ~ "ln(CAC\\,+\\,1)",
+  model_bias_table$model == "lognormal_full" ~ "ln(CAC\\,$|$\\,CAC\\,$>$\\,0)$_i$",
+  model_bias_table$model == "lm_lognormal" ~ "ln(CAC\\,$|$\\,CAC\\,$>$\\,0)",
+  model_bias_table$model == "lm_lognormal_plus1" ~ "ln(CAC\\,$+$\\,1)",
 )
 
 # paste the SD's to the means with parentheses
@@ -604,10 +604,10 @@ model_bias_table <- select(model_bias_table,
 
 # rename columns
 model_bias_table <- rename(model_bias_table,
-  `$t_0$ (years)` = t0_mean_bias_avg,
-  `$t_0$ sex (years)` = t0_male_effect_bias_avg,
-  `$d$ (years)` = d_mean_bias_avg,
-  `$d$ sex (years)` = d_male_effect_bias_avg,
+  `$t_0$` = t0_mean_bias_avg,
+  `$t_0$ sex` = t0_male_effect_bias_avg,
+  `$d$` = d_mean_bias_avg,
+  `$d$ sex` = d_male_effect_bias_avg,
 )
 
 # output as tex format

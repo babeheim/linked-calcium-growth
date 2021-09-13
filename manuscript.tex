@@ -1,53 +1,36 @@
-\documentclass[a4paper, 10pt]{article}
+\documentclass[aps,pre,twocolumn,twoside,tightenlines,groupedaddress,amsmath,amssymb,nobibnotes,final,showkeys,letterpaper]{revtex4-2}
 
-\usepackage{arxiv}
-\usepackage[backend=biber, style=numeric-comp, sortcites, sorting=none]{biblatex}
-\addbibresource{references.bib}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{natbib}
+\usepackage{bbold}
+\usepackage{calc}
+\usepackage{bm}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage[dvipsnames]{xcolor}
 
-\usepackage{graphicx} % to allow includegraphics{}
-
-% \usepackage{draftwatermark}
-% \SetWatermarkText{Draft}
-% \SetWatermarkScale{2}
-
-\usepackage[utf8]{inputenc} % allow utf-8 input
-\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
-
-\usepackage[usenames,dvipsnames]{xcolor} % hyperlink colors
-\usepackage{hyperref}       % hyperlinks
-\hypersetup{
-    colorlinks,
-    linkcolor={black!80!black},
-    citecolor={blue!90!black},
-    urlcolor={blue!90!black}
-}
-\usepackage{url}            % simple URL typesetting
 \usepackage{booktabs}       % professional-quality tables
-\usepackage{amsfonts}       % blackboard math symbols
-\usepackage{nicefrac}       % compact symbols for 1/2, etc.
-\usepackage{microtype}      % microtypography
-\usepackage{lipsum}    % Can be removed after putting your text content
 
-\usepackage{setspace} % for \onehalfspacing and \singlespacing macros
-\onehalfspacing
+\usepackage{tikz} % make sure this comes late!
 
-\usepackage{etoolbox}
-\AtBeginEnvironment{quote}{\par\singlespacing\small}
+\renewcommand*{\bibfont}{\footnotesize}
 
-\usepackage{tikz} % this package is SUPER SLOW
-
-% \def\HS{\hspace{\fontdimen2\font}}\the\fontdimen2\font
-
-\title{A Linked Mixture Model of Coronary Atherosclerosis}
-
-\date{\today}  % Here you can the date presented in the paper title
-
-\author{
-  Bret Beheim\\
-  Department of Human Behavior, Ecology and Culture\\
-  Max Planck Institute for Evolutionary Anthropology\\
-  Leipzig, Germany\\
-  \texttt{bret\_beheim@eva.mpg.de}\\
+\hypersetup{
+  bookmarks=true,
+  unicode=false,
+  pdftoolbar=true,
+  pdfmenubar=true,
+  pdffitwindow=false,
+  pdfstartview={FitH},
+  pdfnewwindow=true,
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  filecolor=magenta,
+  urlcolor=blue
 }
 
 \input{calcsVarianceBias.tex}
@@ -55,93 +38,84 @@
 \input{calcsExperimentOutput.tex}
 
 \begin{document}
+
+\title{A linked mixture model of coronary atherosclerosis}
+\author{Bret\;Beheim}
+\email{bret\_beheim@eva.mpg.de}
+\affiliation{Department of Human Behavior, Ecology and Culture, Max Planck Institute for Evolutionary Anthropology, Leipzig, Germany}
+
+\keywords{Agatston Scores, Coronary Calcium, Bayesian Methods, Generative Inference}
+
 \maketitle
 
-\begin{abstract}
-\textit{Background \& Objectives:} Characterizing the progression of coronary atherosclerosis is a critical public health goal. The most common quantitative summary, the CAC score, is modelled by a variety of statistical methods, both as a predictor of coronary events and as an outcome of behavioral and population-specific risk factors. Little attempt has been made, however, to ground these statistical models in the underlying physiology of arterial aging, which would allow us to describe the onset and growth of CAC over a patient's life.
+\section{Introduction}
 
-\textit{Methods:} Using a generative growth model for arterial plaque accumulation, we identify severe under-estimation in the age of initial onset and rate of progression (doubling time) of CAC growth with standard ln(CAC\,+\,1) or ln(CAC\,|\,CAC\,>\,0) models, and use this growth model to motivate new statistical approaches to CAC using logistic and log-linear mixture regressions. We compare statistical models directly by computing their average parameter biases using \numStudies{} growth trajectory simulations (\numPatients{} patients, \numObservations{} observations).
+The coronary calcium (CAC) score was first proposed by Agatston, \textit{et al.} \cite{agatston1990cac} to quantify the amount of calcified plaque in the coronary arteries, and remains the standard metric for assessing arterial aging \cite{berry2012lifetime, nakahara2017calcification}. Three decades of research with large cohorts of patients, in both cross-sectional and longitudinal designs, has shown a patient's CAC score to be highly predictive of subsequent major coronary events \cite{vliegenthart2002rotterdam, kondos2003events, arad2005events, lamonte2005dallas, budoff2007long}, even among patients with few additional risk factors \cite{taylor2005premature, lakoski2007lowriskwomen}. Many studies have found CAC varies systematically by nationality \cite{santos2006international, schmermund2007comparison} and ethnicity \cite{hoff2001trajectories, bild2002mesa, bild2005ethnic, budoff2006ethnic}, with some populuations showing very little CAC even into advanced age \cite{kaplan2017tsimane}, leading to debates over whether atherosclerosis itself is a consequence of sedentary, industrialized lifestyles \cite{thompson2013mummies, gurven2020weird}.
 
-\textit{Results:} While all models used can successfully estimate the influence of risk factors with minimal bias, we demonstrate substantial improvements in predictive accuracy in the timing of CAC onset and progression with logistic regression and linked hurdle-lognormal mixture regression, compared with standard ln(CAC\,+\,1) or ln(CAC\,|\,CAC\,>\,0) models.
-
-\textit{Conclusions:} Using models that can account for patient-specific onset and progression rates, accurate descriptions of CAC trajectories can be made even in cross-sectional (single scan per patient) designs, with substantial clinical and epidemiological utility.
-\end{abstract}
-
-\keywords{Agatston Scores \and Coronary Calcium \and Bayesian Methods \and Generative Inference}
-
-\section{Background \& Objectives}
-
-The coronary calcium (CAC) score was first proposed by Agatson, \textit{et al.} \cite{agatston1990cac} to quantify the amount of calcified plaque in the coronary arteries, and remains the standard metric for assessing arterial aging \cite{berry2012lifetime, nakahara2017calcification}. Three decades of research with large cohorts of patients, in both cross-sectional and longitudinal designs, has shown a patient's CAC score to be highly predictive of subsequent major coronary events \cite{vliegenthart2002rotterdam, kondos2003events, arad2005events, lamonte2005dallas, budoff2007long}, even among patients with few additional risk factors \cite{taylor2005premature, lakoski2007lowriskwomen}. Many studies have found CAC varies systematically by nationality \cite{santos2006international, schmermund2007comparison} and ethnicity \cite{hoff2001trajectories, bild2002mesa, bild2005ethnic, budoff2006ethnic}, with some populuations showing very little CAC even into advanced age \cite{kaplan2017tsimane}, leading to debates over whether atherosclerosis itself is a consequence of sedentary, industrialized lifestyles \cite{thompson2013mummies, gurven2020weird}.
-
-Yet, despite its centrality in the study of atherosclerosis, the CAC score's significance in clinical practice is ambiguous \cite{berman2016beyond, blaha2016improving}, and it lacks a consistent statistical model from study to study. A given analysis may employ ordered categorical \cite{budoff2007long, koulaouzidis2013aggressive, silverman2014extreme, fujiyoshi2014japan}, linear \cite{koulaouzidis2013comparison, budoff2013progression}, log-linear \cite{criqui2014density, mcclelland2015prediction, blaha2016improving, hughesaustin2016relationship}, quantile \cite{ahmed2013mesa, ohmotosekine2016lung} and proportional hazards \cite{nasir2007mortality, folsom2008imt, hou2012prognostic} regression models, using CAC both as an outcome \cite{oei2004risk, arad2005events, kaplan2017tsimane} or a predictor \cite{detrano2008predictor, folsom2008imt}. With some exceptions, e.g. \cite{mcclelland2009arterial, defilippis2011framingham, budoff2013progression, ahmed2013mesa, arguelles2014factors, whelton2015predictors}, the CAC score is almost always modelled as a cross-sectional value that varies between patients, rather than as the result of an atherosclerotic growth process within an individual over the course of their lives.
+Despite the centrality of the CAC score in the study of atherosclerosis, its significance in clinical practice is ambiguous \cite{berman2016beyond, blaha2016improving}, and it lacks a consistent statistical model from study to study. A given analysis may employ ordered-categorical \cite{budoff2007long, koulaouzidis2013aggressive, silverman2014extreme, fujiyoshi2014japan}, linear \cite{koulaouzidis2013comparison, budoff2013progression}, log-linear \cite{criqui2014density, mcclelland2015prediction, blaha2016improving, hughesaustin2016relationship}, quantile \cite{ahmed2013mesa, ohmotosekine2016lung} and proportional hazards \cite{nasir2007mortality, folsom2008imt, hou2012prognostic} regression models. With some exceptions, e.g. \cite{mcclelland2009arterial, defilippis2011framingham, budoff2013progression, ahmed2013mesa, arguelles2014factors, whelton2015predictors}, the CAC score is almost always modelled as a cross-sectional value that varies between patients, rather than as an atherosclerotic growth process within an individual.
 
 To better connect the CAC score to the dynamic physiology of arterial aging, we propose a simple growth model for the onset and progression of calcified arterial plaques. Using  high-throughput computational simulations to generate \numStudies{} realistic CAC studies (\numStudiesCross{} cross-sectional and \numStudiesLong{} longitudinal studies, \numPatients{} patients, \numObservations{} observations), this model can identify structural mis-specifications in many of the common log-linear models of CAC, and indicate specific statistical modifications which dramatically improve the predictive accuracy of CAC modelling across the life course.
 
 \section{Methods}
 
-\subsection{A Generative Model of CAC Growth}
+\subsection*{A generative model of CAC growth}
 
-Although CAC is modelled in the current literature described above by a large variety of methods, we can synthesize two key empirical details from which to build a generative model \cite{gelman2021regression}. First, calcified plaques typically appear in the coronary artery in middle age, with substantial variability between patients. Before this age of onset, $t_0$, patients given a computerized tomography scan would have a CAC score of 0. After the age of onset, an individual's CAC steadily accumulates at one or more plaque sites in the coronary artery, increasing at a non-linear pace set in part by variation in genetics, behavior, or risk exposures \cite{taylor2005premature, budoff2009absolute, mcclelland2009arterial, budoff2013progression}, with CAC measurements of longitudinal study participants increasing between 14.3\% and 29.7\% annually \cite{houslay2006progressive, ikegami2018rate}. Given this, let us assume that the rate of growth in CAC at a given moment $t$ after the age of onset $t_0$ is proportional to both immediate risk factors and the current amount of coronary calcium, that is,
-
+Although CAC is modelled in the current literature described above by a large variety of methods, we can synthesize two key empirical details from which to build a generative model \cite{gelman2021regression}. First, calcified plaques typically appear in the coronary artery in middle age, and before a patient's age of onset, they will show a CAC score of 0 if given a computerized tomography scan. After the age of onset, an individual's CAC steadily accumulates at one or more plaque sites in the coronary artery, increasing at a non-linear pace set in part by variation in genetics, behavior, or risk exposures \cite{taylor2005premature, budoff2009absolute, mcclelland2009arterial, budoff2013progression}, with CAC measurements of longitudinal study participants increasing between 14.3\% and 29.7\% annually \cite{houslay2006progressive, ikegami2018rate}. Given this, let us assume that the rate of growth in CAC at a given moment $t$ after the age of onset $t_0$ is proportional to both immediate risk factors and the current amount of coronary calcium, that is,
 \begin{equation}
   \label{eq:model}
-  \frac{dy}{dx} = y(t)\,k(t),
+  \frac{dy}{dt} = y(t)\,k(t),
 \end{equation}
-
-for CAC score $y(t)$ and positive growth function $k(t)$. The CAC score $y$ is thus given by the integral of all growth velocities since the age of onset $t_0$,
-
+for CAC score $y(t)$ and positive growth function $k(t)$. The CAC score is thus given by the integral of all growth velocities since the age of onset $t_0$,
 \begin{equation}
   \label{eq:modelIntegral}
-  y(t) = \int_{t_0}^{t} y(x)\,k(x)\;dx
+  y(t) = \int_{t_0}^{t} y(x)\,k(x)\;dx.
 \end{equation}
-
-As we observe the score $y$ change with time, we could estimate the shape of the rate function $k(t)$. However, since we ordinarily do not have more than one CAC measurement per patient, we can instead appeal to the \textit{average} growth rate between $t_0$ and $t$, $k = (t - t_0)^{-1}\int_{t_0}^{t} k(x)\;dx$, a constant. We can then solve Equation 1 as
-
+In principle, we could estimate the shape of the rate function $k(t)$ as we observe the score $y$ change with time. However, since we ordinarily do not have more than one CAC measurement per patient, we can instead appeal to the \textit{average} growth rate between $t_0$ and $t$, 
+$$
+k = (t - t_0)^{-1}\int_{t_0}^{t} k(x)\;dx,
+$$
+a constant. We can then solve Equation 1 as
 \begin{equation}
   \label{eq:modelSolution}
-  \mathrm{ln}\;y(t) = k\,(t - t_0)\;\;\;\mathrm{for\;any}\;\;\;t \geq t_0.
+  \mathrm{ln}\;y(t) = k\,(t - t_0),
 \end{equation}
-
-Since rate $k$ describes an exponential growth process, it is useful to re-express $k$ as a \textit{doubling time}. That is, for any CAC score $y$ at time $t$, we can describe the time $t + d$ at which the score is doubled, which is true if $d = (\mathrm{ln}\;2)/k$. Longitudinal studies report a doubling time between 2.7 and 5.8 years \cite{houslay2006progressive, ikegami2018rate}. An example atherosclerosis trajectory and linear approximation following this approach for a single patient is given in Figure \ref{fig:singleTrajectory}.
+for any $t \geq t_0$. Since rate $k$ describes an exponential growth process, it is useful to re-express $k$ as a \textit{doubling time}. That is, for any CAC score $y$ at time $t$, we can describe the time $t + d$ at which the score is doubled, which is true if $d = (\mathrm{ln}\;2)/k$. Longitudinal studies of CAC report an average doubling time between 2.7 and 5.8 years \cite{houslay2006progressive, ikegami2018rate}. An example atherosclerosis trajectory and linear approximation following this approach for a single patient is given in Figure \ref{fig:singleTrajectory}.
 
 Allowing for a small amount of measurement error, we can estimate the average $k$ for a set of observations by log-linear regression. For each observation $j$, with CAC score $y_j$, and patient age $t_j$,
-
 $$
-  y_j \sim \mathrm{LogNormal}(\mu_j, \sigma)
+  y_j \sim \mathrm{LogNormal}(\mu_j, \sigma),
 $$
 \begin{equation}
   \label{eq:linearModel}
   \mu_j = k\,(t_j - t_0).
 \end{equation}
+That is, each observation varies around some average CAC score $\mu_j$ with standard deviation $\sigma$ due to measurement error and other unobserved factors. Given a dataset recording a single individual's CAC trajectory over time, and the log-linear regression model $\mu_j = a + bt_j$, we could estimate the model parameters in Equation \ref{eq:linearModel} as $t_0 = (-a/b)$, $k = b$ and $d = \mathrm{ln}(2)/b$.
 
-Each observation varies around some average CAC score $\mu_j$ with standard deviation $\sigma$ due to measurement error and other unobserved factors. Given a dataset recording a single individual's CAC trajectory over time, and the log-linear regression model $\mu_j = a + bt_j$, we could estimate the model parameters in Equation \ref{eq:linearModel} as $t_0 = (-a/b)$, $k = b$ and $d = \mathrm{ln}(2)/b$.
-
-\begin{figure}[ht]
+\begin{figure*}[ht]
   \centering
   \input{figureSingleTrajectory.tex}
-  \caption{A single patient's coronary atherosclerosis progression over time, as measured by CAC score (blue). Onset at age $t_0$ is defined as the initial appearance of calcified plaque (CAC\,>\,0), which is equivalent to a CAC score of 1 in most studies. Before $t_0$ the patient's CAC is 0. All CAC measurements after $t_0$ are given by Equation \ref{eq:modelIntegral}. Average growth rate $k$ and doubling time $d = \mathrm{ln}(2)/k$ are defined by a linear approximation (black line) using the location of $t_0$ and observation $y$. In this growth trajectory, the patient's instantaneous CAC growth rate $k(t)$ intermittently decreases. Because we are usually confined to a single measurement $y$ at some time $t$, neither the location of $t_0$ nor the rate function $k(t)$ are directly observable, but can be approximated by log-linear regression methods (Equations \ref{eq:linearModel}, \ref{eq:multiLinearModel}).}
+  \caption{A single patient's coronary atherosclerosis progression over time, as measured by CAC score (blue). Onset at age $t_0$ is defined as the initial appearance of calcified plaque (CAC\,$>$\,0), which is equivalent to a CAC score of 1 in most studies. Before $t_0$ the patient's CAC is 0. All CAC measurements after $t_0$ are given by Equation \ref{eq:modelIntegral}. Average growth rate $k$ and doubling time $d = \mathrm{ln}(2)/k$ are defined by a linear approximation (black line) using the location of $t_0$ and observation $y$. In this growth trajectory, the patient's instantaneous CAC growth rate $k(t)$ intermittently decreases. Because we are usually confined to a single measurement $y$ at some time $t$, neither the location of $t_0$ nor the rate function $k(t)$ are directly observable, but can be approximated by log-linear regression methods (Equations \ref{eq:linearModel}, \ref{eq:multiLinearModel}).}
   \label{fig:singleTrajectory}
-\end{figure}
+\end{figure*}
 
-\subsection{Structural Mis-estimation of Disease Onset and Progression}
+\subsection*{Structural mis-estimation of disease onset and progression}
 
-Studying CAC on the logarithmic scale was originally proposed by Agatston, \textit{et al.} \cite{agatston1990cac} and remains the most common statistical approach, usually either with ln(CAC\,+\,1) or ln(CAC\,|\,CAC\,>\,0) as dependent variables. However, the growth model described in Equation \ref{eq:linearModel} indicates the existence of two major estimation biases with such methods (Figure \ref{fig:varianceBias}). Principally, the existence of distinct CAC age trajectories across patients is not a structural component of log-linear regression, which treats each patient-observation as following a single population average log-linear path from a single age of onset, $t_0$. As a consequence, standard regression models of CAC systematically under-estimate the age of atherosclerotic onset (Figure \ref{fig:varianceBias}, left) and rate of progression (Figure \ref{fig:varianceBias}, right) in direct proportion to between-patient variability. Under realistic growth conditions, a standard deviation in atherosclerotic onset of only 3 years can induce estimation biases as severe as five decades.
+Studying CAC on the logarithmic scale was originally proposed by Agatston, \textit{et al.} \cite{agatston1990cac} and remains the most common statistical approach, commonly with ln(CAC\,$+$\,1) or ln(CAC\,$|$\,CAC\,$>$\,0) as dependent variables. However, the growth model described in Equation \ref{eq:linearModel} indicates the existence of two major estimation biases with such methods (Figure \ref{fig:varianceBias}). Principally, the existence of distinct CAC age trajectories across patients is not a structural component of log-linear regression, which treats each patient-observation as following a single population average log-linear path from a single age of onset, $t_0$. As a consequence, standard regression models of CAC systematically under-estimate the age of atherosclerotic onset (Figure \ref{fig:varianceBias}, left) and rate of progression (Figure \ref{fig:varianceBias}, right) in direct proportion to between-patient variability. Under realistic growth conditions, a standard deviation in atherosclerotic onset among patients of only 3 years can induce estimation biases as severe as five decades.
 
-An additional bias is introduced by studies that alter the scores of patients with no atherosclerosis (CAC = 0). Since 0 is undefined on the logarithmic scale, many studies first re-assign these patients a CAC score of 1 \cite{oei2004risk, arad2005events, budoff2006ethnic, schmermund2007comparison, detrano2008predictor, moehlenkamp2011inflammation, wong2011abdominal, leening2012elderly, hughesaustin2016relationship, mcclelland2015prediction, blaha2016improving}, indicating these patients have already begun atherosclerosis. The common justification given for the log-transform is to normalize the distribution of CAC \cite{agatston1990cac, budoff2006ethnic, schmermund2007comparison, folsom2008imt}. Yet depending on the cohort, a majority of patients may have a CAC score of 0. Consequently, such logarithmic outcome distributions are extremely zero-inflated, e.g. Figure 1 in \cite{schmermund2007comparison}. By estimating the average growth rate $k$ from a population in which some are growing CAC at rate $k$ and others are not growing CAC at all, we can expect log-linear regression models to introduce additional biases of at least \biasDiffOnset{} in CAC age of onset (Figure \ref{fig:varianceBias}, left, red) and \biasDiffDoubling{} in CAC doubling time (Figure \ref{fig:varianceBias}, right, red) versus studies that exclude non-atherosclerotic patients before performing the regression \cite{bild2005ethnic, mcclelland2006mesa, bielak2008amish, budoff2013progression, criqui2014density, kaplan2017tsimane}.
+An additional bias is introduced by studies that alter the scores of patients with no atherosclerosis (CAC = 0). Since 0 is undefined on the logarithmic scale, many studies first re-assign these patients a CAC score of 1 \cite{oei2004risk, arad2005events, budoff2006ethnic, schmermund2007comparison, detrano2008predictor, moehlenkamp2011inflammation, wong2011abdominal, leening2012elderly, hughesaustin2016relationship, mcclelland2015prediction, blaha2016improving}, indicating these patients have already begun atherosclerosis. The common justification given for the log-transform is to normalize the distribution of CAC \cite{agatston1990cac, budoff2006ethnic, schmermund2007comparison, folsom2008imt}. Yet depending on the cohort, a majority of patients may have a CAC score of 0. Consequently, such logarithmic outcome distributions are extremely zero-inflated, e.g. Figure 1 in \cite{schmermund2007comparison}. By estimating the average growth rate $k$ from a realistic population in which some are growing CAC at rate $k = 1$ and others are not growing CAC at all, we can expect log-linear regression models to introduce additional biases of at least \biasDiffOnset{} in CAC age of onset (Figure \ref{fig:varianceBias}, left, red) and \biasDiffDoubling{} in CAC doubling time (Figure \ref{fig:varianceBias}, right, red) versus studies that exclude non-atherosclerotic patients before performing the regression \cite{bild2005ethnic, mcclelland2006mesa, bielak2008amish, budoff2013progression, criqui2014density, kaplan2017tsimane}.
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
   \input{figureVarianceBias.tex}
-  \caption{The relationship between inter-individual variance in $t_0$ and the bias in linear regression estimate of the age of onset (left) and the doubling time of CAC (right) for a sample of single observations from \biasNumPatients{} patients. Experimentally controlling the simulation standard deviation in individual age of onset, $\sigma_{t0}$, \biasNumSamples{} cross-sectional datasets are randomly drawn from \biasNumPatients{} patient growth trajectories. For each dataset, regression estimates are calculated in a log-linear regression of ln(CAC\,+\,1) (red) or ln(CAC\,|\,CAC\,>\,0) (black) on patient age, and the true onset age $t_0$ in the simulation is subtracted from onset estimates $-a/b$. Average cross-sectional estimates are shown with 89\% confidence regions. The ln(CAC\,+\,1) estimates are, on average, \biasDiffOnset{} more biased than ln(CAC\,|\,CAC\,>\,0) on $t_0$ and \biasDiffDoubling{} more biased in $d$ over the observed range of $\sigma_{t0}$. Reproducible R code for this simulation and figure is available in the Supplementary Materials.}
+  \caption{The relationship between inter-individual variance in $t_0$ and bias in linear regression estimates of the age of onset (left) and the doubling time (right) of CAC for a simulated cohort of \biasNumPatients{} patients ($t_0$ = 40, $k$ = 1). Experimentally controlling the simulation standard deviation in individual age of onset, \biasNumSamples{} cross-sectional datasets are constructed, each selecting a single random observation from each patient growth trajectory (average scan age 60$\,\pm\,$10 years). For each dataset, parameter estimates are calculated in a log-linear regression of ln(CAC\,$+$\,1) (red) or ln(CAC\,$|$\,CAC\,$>$\,0) (black) on patient age, and the true onset age $t_0$ in the simulation is subtracted from onset estimates $-a/b$. Average cross-sectional estimates are shown with 89\% confidence regions. The ln(CAC\,$+$\,1) estimates are, on average, \biasDiffOnset{} more biased than ln(CAC\,$|$\,CAC\,$>$\,0) on $t_0$ and \biasDiffDoubling{} more biased in $d$ over the observed range of $\sigma_{t0}$. Reproducible R code for this simulation and figure is available in the Supplementary Materials.}
   \label{fig:varianceBias}
-\end{figure}
+\end{figure*}
 
-\subsection{Alternate Statistical Specifications}
+\subsection*{Alternate statistical specifications}
 
 To prevent inter-individual variation from manifesting as bias in statistical analyses, we can modify the log-linear model in Equation \ref{eq:linearModel} with explicit CAC growth trajectories for each patient $i$ by
-
 $$
-  y_j \sim \mathrm{LogNormal}(\mu_j, \sigma)
+  y_j \sim \mathrm{LogNormal}(\mu_j, \sigma),
 $$
 \begin{equation}
   \label{eq:multiLinearModel}
@@ -156,98 +130,68 @@ $$
 
 That is, the time of initial onset for each individual $i$, $t_{0i}$, is assumed to vary around some population-average age $t_0$ by standard deviation $\sigma_{t0}$, and similarly for individual-specific average growth rate $k_i$.
 
-Rather than exclude patients who have no CAC, or introduce bias by altering their values, another approach is to employ generalized linear regression to model the probability CAC > 0 \cite{vliegenthart2002rotterdam, kondos2003events, taylor2005premature, vliegenthart2005elderly, schmermund2006heinz, santos2006international, nasir2007mortality, lakoski2007lowriskwomen, budoff2007long, lutsey2008acculturation,okwuosa2011lowrisk, yu2013korean, aboyans2011peripheral, whelton2015predictors}. If we define the log-odds that a patient's CAC score at observation $j$ is non-zero as $\theta_j = \mathrm{logit}(\mathrm{Pr}(y_j > 0))$, then for any individual $i$ observed at age $t_j$,
-
+Rather than exclude patients who have no CAC, or introduce bias by altering their values, another approach is to employ generalized linear regression to model the probability CAC\,$>$\,0 \cite{vliegenthart2002rotterdam, kondos2003events, taylor2005premature, vliegenthart2005elderly, schmermund2006heinz, santos2006international, nasir2007mortality, lakoski2007lowriskwomen, budoff2007long, lutsey2008acculturation,okwuosa2011lowrisk, yu2013korean, aboyans2011peripheral, whelton2015predictors}. If we define the log-odds that a patient's CAC score at observation $j$ is non-zero as $\theta_j = \mathrm{logit}(\mathrm{Pr}(y_j>0))$, then for any individual $i$ observed at age $t_j$,
 \begin{equation}
   \label{eq:logit}
-  \theta_j = \frac{t_j - \ell_i}{v}
+  \theta_j = \frac{t_j - \ell_i}{v},
 \end{equation}
 $$
-  \ell_i \sim \mathrm{Normal}(\ell, \sigma_\ell)
+  \ell_i \sim \mathrm{Normal}(\ell, \sigma_\ell).
 $$
 
-The probability CAC is observed to be nonzero rises sinusoidally from 0 to 1 over the life course, reaching 50\% probability at age $\ell_i$ for patient $i$. We can expect $\ell_i$ to vary by individual according to parameters $v$ and $\sigma_\ell$, but also systematically by risk factors shared across individuals which can be incorporated into a multivariate logistic regression model. Unlike log-linear models above, this approach can utilize all observations, including those for which $y_j = 0$, at the cost of being unable to distinguish non-zero CAC magnitudes.
+The probability CAC is observed to be nonzero rises sinusoidally from 0 to 1 over the life course, reaching 50\% probability at age $\ell_i$ for patient $i$. We can expect $\ell_i$ to vary by individual according to parameters $v$ and $\sigma_\ell$, but also systematically by risk factors, e.g. patient sex, which can be incorporated into a multivariate logistic regression model. Unlike log-linear models above, this approach can utilize all observations, including those for which $y_j = 0$, at the cost of being unable to distinguish non-zero CAC magnitudes.
 
-Models of CAC > 0 can be combined with models of CAC magnitudes in so-called mixture models \cite{mcelreath2020rethinking}, first introduced in the literature by Kaplan, \textit{et al.} \cite{kaplan2017tsimane} with the use of a zero-inflated Negative Binomial model. Such models incorporate two distinct probability distributions to describe both zero outcomes and non-zero magnitudes simultaneously. Here we employ the related concept of a hurdle model, which allows an additional link between these two distributions. Specifically, in modelling the probability of CAC > 0 by age, we are simultaneously describing the age of onset as a random quantity. If we re-interpret the inverse-logit link as a cumulative distribution function, onset age for each individual $i$ must follow a Logistic probability distribution with mean $\ell_i$ and standard deviation $v \pi/ \sqrt{3}$. Therefore, both the hurdle and log-normal components of this mixture share a common parameter in the individual onset age, as
-
+Models of CAC\,$>$\,0 can be combined with models of CAC magnitudes in so-called mixture models \cite{mcelreath2020rethinking}, first introduced in the CAC literature by Kaplan, \textit{et al.} \cite{kaplan2017tsimane} with the use of a zero-inflated Negative Binomial model. Such models incorporate two distinct probability distributions to describe both zero outcomes and non-zero magnitudes simultaneously. Here we employ the related concept of a hurdle model, which allows an additional link between these two distributions. Specifically, in modelling the probability of CAC\,$>$\,0 by age, we are simultaneously describing the age of onset as a random quantity. If we re-interpret the inverse-logit link as a cumulative distribution function, onset age for each individual $i$ must follow a Logistic probability distribution with mean $\ell_i$ and standard deviation $v \pi/ \sqrt{3}$. Therefore, both the hurdle and log-normal components of this mixture share a common parameter in the individual onset age, as
 $$
   t_{0i} \sim \mathrm{Logistic}(\ell_i, v).
 $$
 
-\begin{figure}[t]
+\begin{figure*}[t]
   \centering
   \input{figureLongCrossExamples.tex}
-  \caption{Observed CAC trajectories for 5 longitudinal study patients (left) and 40 cross-sectional patients (right), with average counterfactual predictions from fitted ln(CAC\,|\,CAC\,>\,0) (black), ln(CAC\,+\,1) (red) and linked hurdle-lognormal (blue) models. In each figure, the true population average $t_0$ is indicated by a black triangle. All statistical models are fit in R and Stan, with prior uncertainty equal to simulation uncertainty. Reproducible R code for this simulation and figure is available in the Supplementary Materials.}
+  \caption{Observed CAC trajectories for 5 longitudinal study patients (left) and 40 cross-sectional patients (right), with average counterfactual predictions from fitted ln(CAC\,$|$\,CAC\,$>$\,0) (black), ln(CAC\,$+$\,1) (red) and linked hurdle-lognormal (blue) models. In each figure, the true population average $t_0$ is indicated by a black triangle. All statistical models are fit in R and Stan, with prior uncertainty equal to simulation uncertainty. Reproducible R code for this simulation and figure is available in the Supplementary Materials.}
   \label{fig:longCrossExamples}
-\end{figure}
+\end{figure*}
 
-Thus, the ages of onset in a multi-trajectory log-linear model are random quantities that follow the parameters of the hurdle model. During Bayesian statistical estimation, the hurdle component's $\ell_i$ and $v$ are updated by CAC presence/absence observations, adding additional resolution on the location of $t_{0i}$ in the log-linear model, and in turn the log-linear estimation of $t_{0i}$ is updated by observed magnitudes of nonzero CAC, and so inform the locations of $\ell_i$ and $v$ in the hurdle component (Figure \ref{fig:longCrossExamples}). Taken together, this fully defines the linked hurdle-lognormal mixture model.\footnote{A complete list of variables is given in Table \ref{tab:variableGlossary}.}
+Thus, the ages of onset in a multi-trajectory log-linear model are random quantities that follow the parameters of the hurdle model. During Bayesian statistical estimation, the hurdle component's $\ell_i$ and $v$ are updated by CAC presence/absence observations, adding additional resolution on the location of $t_{0i}$ in the log-linear model. In turn, the log-linear estimation of $t_{0i}$ is updated by observed magnitudes of nonzero CAC, and so inform the locations of $\ell_i$ and $v$ in the hurdle component (Figure \ref{fig:longCrossExamples}). Taken together, this fully defines the linked hurdle-lognormal mixture model. A complete list of variables is given in Table \ref{tab:variableGlossary}.
 
-\subsection{Ranking Statistical Models by Generative Simulation}
+\subsection*{Ranking statistical models by generative simulation}
 
-In order to characterize gross performance differences between the above methods of studying CAC growth, we simulated \numStudies{} datasets for populations experiencing a variety of realistic atherosclerotic growth scenarios (Table \ref{tab:experimentSummary}), varying in the number of patients observed (from 1 to 1,000 patients), the number of observations per patient and the impact of risk factors of age and sex on initial onset and progression. We can summarize patient data for N = \numPatients{} patients seen over all \numStudies{} studies in Table \ref{tab:patientSummary}.
+In order to characterize gross performance differences between the above methods of studying CAC growth, we simulated \numStudies{} datasets for populations experiencing a variety of realistic atherosclerotic growth scenarios (Table \ref{tab:experimentSummary}), varying in the number of patients observed (from 1 to 1,000 patients), the number of observations per patient and the impact of standard risk factors (age and sex) on initial onset and progression. We can summarize patient data for N = \numPatients{} patients seen over all \numStudies{} studies in Table \ref{tab:patientSummary}.
 
-For each study, we consider each of the seven models described above: log-linear regressions of ln(CAC\,+\,1) or ln(CAC\,|\,CAC\,>\,0) on patient age and logistic regressions of Pr(CAC\,>\,0) with or without individual trajectories for each patient $i$, and mixture models including a logistic hurdle and log-linear magnitude component with or without a hierarchical link between $t_{0i}$ and $\ell_{0i}$. The seven models were fit to each of the \numStudies{} datasets, statistical estimates were calculated and extracted, and, given the true values for each individual trajectory were known, the average bias of each parameter estimate was computed. To assess bias in estimating the importance of other risk factors besides patient age, we include patient sex (male or female) as an additional covariate in each model. All simulations were performed in R version 4.0.4 and models were fit with Stan by the \texttt{cmdstanr} library version 0.3.0.9, with all reproducible code available in the Supplementary Materials.
+For each study, we consider each of the seven models described above: log-linear regressions of ln(CAC\,$+$\,1) or ln(CAC\,$|$\,CAC\,$>$\,0) on patient age and logistic regressions of Pr(CAC\,$>$\,0) with or without individual trajectories for each patient $i$, and mixture models including a logistic hurdle and log-linear magnitude component with or without a hierarchical link between $t_{0i}$ and $\ell_{0i}$. The seven models were fit to each of the \numStudies{} datasets, statistical estimates were calculated and extracted, and, given the true values for each individual trajectory were known, the average bias of each parameter estimate was computed. To assess bias in estimating the importance of other risk factors besides patient age, we include patient sex (male or female) as an additional covariate in each model. All simulations were performed in R version 4.0.4 and models were fit with Stan by the \texttt{cmdstanr} library version 0.3.0.9, with all analysis code available in the Supplementary Materials.
 
 \begin{table}
   \centering
-  \caption{Tabulation of conditions across \numStudies{} simulated CAC studies. Here ``longitudinal'' studies involve 100 annual observations over the entire course of each patient's life (all individuals live to age 100), while ``cross-sectional'' studies simulate realistic CAC datasets by randomly sampling a single observation from each patient's adult measurements. As sex is a commonly-observed risk factor across studies, some populations here include a root-mean-square difference of \studySexDiffOnset{} on $t_0$ and \studySexDiffDoubling{} on $d$ between men and women. If present, between-individual variation is set by model parameters $\sigma_{t0} = $ \studyIndDiffOnset{} and $\sigma_{d} = $ \studyIndDiffDoubling. Bayesian statistical models use either ``simulation'' priors, set to have the same uncertainty as the generative simulation itself, or ``regularizing'' priors, which reflect larger, empirically-plausible ranges for each parameter \cite{mcelreath2020rethinking}. Generative R code to create these simulated populations can be found in the Supplementary Materials.}
   \begin{tabular}{lrr}
     \toprule
     \input{tableExperimentSummary.tex}
     \bottomrule
   \end{tabular}
+  \caption{Tabulation of conditions across \numStudies{} simulated CAC studies. Here ``longitudinal'' studies involve 100 annual observations over the entire course of each patient's life (all individuals live to age 100), while ``cross-sectional'' studies simulate realistic CAC datasets by randomly sampling a single observation from each patient's adult measurements. As sex is a commonly-observed risk factor across studies, some populations here include a root-mean-square difference between men and women of \studySexDiffOnset{} on $t_0$ and \studySexDiffDoubling{} on $d$. If present, between-individual variation is set by model parameters $\sigma_{t0} = $ \studyIndDiffOnset{} and $\sigma_{d} = $ \studyIndDiffDoubling. Bayesian statistical models use either ``simulation'' priors, set to have the same uncertainty as the generative simulation itself, or ``regularizing'' priors, which reflect larger, empirically-plausible ranges for each parameter \cite{mcelreath2020rethinking}. Generative R code to create these simulated populations can be found in the Supplementary Materials.}
   \label{tab:experimentSummary}
 \end{table}
 
 \begin{table}
   \centering
-  \caption{Characteristics of patients across \numStudiesCross{} cross-sectional and \numStudiesLong{} longitudinal CAC studies. Means (standard deviations) are given for $t_0$ and $d$.}
   \begin{tabular}{lrrr}
     \toprule
     \input{tablePatientSummary.tex}
     \bottomrule
   \end{tabular}
+  \caption{Characteristics of patients across \numStudiesCross{} cross-sectional and \numStudiesLong{} longitudinal CAC studies. Means (standard deviations) are given for $t_0$ and $d$.}
   \label{tab:patientSummary}
 \end{table}
 
 \section{Results}
 
-Model battery performance is summarized in Table \ref{tab:modelBiasMeans}. In both cross-sectional and longitudinal designs, estimation of onset ages (population average $t_0$ and patient-specific $t_{0i}$) is least biased in models that account for CAC presence / absence. In cross-sectional designs, a logistic regression model estimating the population average age of onset $t_0$ is biased by \biasLogitCrossOnsetEst{} years (SE: \biasLogitCrossOnsetSE), and not statistically distinct from zero bias (\biasLogitCrossOnsetP). Logistic regression estimates of individual patient ages $t_{0i}$ are similarly biased by only \biasHurdleCrossOnsetEst{} years (SE: \biasHurdleCrossOnsetSE, \biasHurdleCrossOnsetP). The linked hurdle log-normal model is biased in cross-sectional designs on average \biasLHLNCrossOnsetEst{} years (SE: \biasLHLNCrossOnsetSE, \biasLHLNCrossOnsetP) but out-performs all other log-linear models in estimation of both age of onset and in estimation of the doubling time.
+Model performance is summarized in Table \ref{tab:modelBiasMeans}. Traditional log-linear models of ln(CAC\,$+$\,1) and ln(CAC\,$|$\,CAC\,$>$\,0) show large, systematic estimation errors across cross-sectional studies, of \biasLNPCrossOnsetEst{} years (SE: \biasLNPCrossOnsetSE, \biasLNPCrossOnsetP) and \biasLNCrossOnsetEst{} years (SE: \biasLNCrossOnsetSE, \biasLNCrossOnsetP), respectively. Similarly, these models systematically under-estimate the average rate of progression, with a doubling-time bias of \biasLNPCrossProgEst{} years (SE: \biasLNPCrossProgSE, \biasLNPCrossProgP) for ln(CAC\,$+$\,1) and \biasLNCrossProgEst{} years (SE: \biasLNCrossProgSE, \biasLNCrossProgP) for ln(CAC\,$|$\,CAC\,$>$\,0) over the true doubling time.
 
-Traditional log-linear models of ln(CAC\,+\,1) and ln(CAC\,|\,CAC\,>\,0) show large, systematic estimation errors across cross-sectional studies, of \biasLNPCrossOnsetEst{} years (SE: \biasLNPCrossOnsetSE, \biasLNPCrossOnsetP) and \biasLNCrossOnsetEst{} years (SE: \biasLNCrossOnsetSE, \biasLNCrossOnsetP), respectively. Similarly, these models systematically under-estimate the average rate of progression, with a doubling-time bias of \biasLNPCrossProgEst{} years (SE: \biasLNPCrossProgSE, \biasLNPCrossProgP) for ln(CAC\,+\,1) and \biasLNCrossProgEst{} years (SE: \biasLNCrossProgSE, \biasLNCrossProgP) for ln(CAC\,|\,CAC\,>\,0) over the true doubling time.
+In both cross-sectional and longitudinal designs, estimation of onset ages (population average $t_0$ and patient-specific $t_{0i}$) is least biased in models that account for CAC presence / absence. In cross-sectional designs, a logistic regression model estimating the population average age of onset $t_0$ is biased by \biasLogitCrossOnsetEst{} years (SE: \biasLogitCrossOnsetSE), and not statistically distinct from zero bias (\biasLogitCrossOnsetP). Logistic regression estimates of individual patient ages $t_{0i}$ are similarly biased by only \biasHurdleCrossOnsetEst{} years (SE: \biasHurdleCrossOnsetSE, \biasHurdleCrossOnsetP). The linked hurdle log-normal model is biased in cross-sectional designs on average \biasLHLNCrossOnsetEst{} years (SE: \biasLHLNCrossOnsetSE, \biasLHLNCrossOnsetP) but out-performs all other log-linear models in estimation of both age of onset and in estimation of the doubling time.
 
-Less systematic bias is observed across models in the estimation of the importance of sex as a predictor of onset and progression. In both cross-sectional and longitudinal designs, all seven models were able to assess the true covariate effect without clear bias, although standard log-linear models show the largest standard errors in bias in both $t_0$ and $d$.
-
-\begin{table}
-  \centering
-  \caption{Estimation bias (mean and standard error) over all \numStudies{} studies. Statistical models that include individual-specific trajectories (subscript $i$) calculate bias estimates using the true $t_{0i}$ and $d_i$ values of each patient; models that can only estimate population-level parameters are compared against the true population average $t_0$ and $d$ within each simulated study. Biases on ``sex'' represent the estimated average difference between men and women minus the true generative difference (or lack thereof). Since $\mathrm{E}(t_{0i}) = \ell_i$, logistic regression models use $\ell_i$ or $\ell$ as equivalents to $t_{0i}$ and $t_0$. Estimates in boldface are statistically distinct from zero bias by two-tailed $t$-tests with $\alpha = 0.001$.}
-  \begin{tabular}{llrrrrrrrrrrrr}
-    \toprule
-    \input{tableModelBiasMeans.tex}
-    \bottomrule
-  \end{tabular}
-  \label{tab:modelBiasMeans}
-\end{table}
-
-\section{Discussion}
-
-Generally speaking, logistic regression and mixture models out-perform log-linear models in estimating population and individual-specific ages of CAC onset, and models that explicitly account for individual patient trajectories out-perform those that do not. These advantages are most pronounced in cross-sectional study designs, which constitute the vast majority of CAC datasets.
-
-Because logistic regression models are able to accurately utilize the full set of patient observations, including those from the period before CAC growth begins, they are able to more-accurately characterize the onset of atherosclerosis compared to log-linear models, which must either exclude patients observed with zero CAC or incorrectly alter these scores to accomodate the logarithmic scale, producing large estimation errors.
-
-Although large biases in estimation are observed in some models in patient-specific CAC onset and progression, substantially smaller, unsystematic errors are found in estimation of the impact of sex. As a proxy for other risk factors such as smoking, obesity and physical activity, this covariate's predictive value is thus less likely to be altered significantly by choice of model in realistic datasets.
-
-While the innovations in model design described above show marked improvements in estimation accuracy, they come with increased costs, in terms of model complexity and computation time, and successful posterior updating of the full linked-hurdle log-normal may not be feasible for very large samples of patients. However, Table \ref{tab:modelBiasMeans} indicates that estimation performance can be improved for specific parameters without the use of the full linked hurdle-lognormal model: for parameter $d$, the ln(CAC\,|\,CAC\,>\,0)$_i$ model is, on average, less biased than either standard log-linear model, and for $t_0$, the logistic regression models with individual trajectories or limited only to population-level values are both very accurate.
-
-More generally, although the simulation studies presented here cover a broad range of realistic epidemiological scenarios, they are strictly limited to the context of the generative model described by Equations \ref{eq:model} and \ref{eq:modelIntegral}. The true process of CAC onset and progression is necessarily more complex, and is only part of the larger process of coronary atherosclerosis, which can be seen as beginning with arterial lesions, and progress to stenosis and vascular occlusion even in the absence of CAC \cite{kelly2008angiography, gottlieb2010absence, nakahara2017calcification, gabriel2018zero}. Incorporating more physiological details, such as the process of soft plaque accumulation prior to calcification, plaque density and stability \cite{shioi2018plaque} or the site-specific formation of individual calcified plaques \cite{berman2016beyond}, can potentially lead to further modelling innovations, and consequently greater improvements in estimation accuracy.
-
-\section{Conclusion}
-
-Currently, the study of atherosclerosis involves a wide variety methods of modelling the CAC score, with multiple statistical designs employed even within the same study. Both because of this awkwardness, and because the CAC score aggregates over distributions of calcified plaque, some have suggested alternative metrics to studying atherosclerosis progression \cite{berman2016beyond, blaha2016improving}. However, the above computational meta-analysis shows the current statistical approaches to CAC modelling have substantial structural biases, tending to represent atherosclerotic growth as beginning earlier and progressing slower than it really does. Modifications to these models that recognize patient-specific growth trajectories are substantially more accurate in realistic simulation studies with both longitudinal and cross-sectional designs, and so we can expect such models to similarly out-perform traditional methods in the analysis of real patient data.
+Less systematic bias is observed across models in the estimation of the importance of sex as a predictor of onset and progression. In both cross-sectional and longitudinal designs, all seven models were able to assess the true covariate effect without clear bias, although standard log-linear models show the largest standard errors in bias in both $t_0$ and $d$ (Table \ref{tab:modelBiasMeans}).
 
 \begin{table}[h]
-  \caption{Glossary of variables used.}
   \centering
   \begin{tabular}{rl}
     \toprule
@@ -265,8 +209,8 @@ Currently, the study of atherosclerosis involves a wide variety methods of model
     $d_i$     & average doubling time in CAC for patient $i$ \\
     $a$     & log-linear regression intercept \\
     $b$     & log-linear regression slope \\
-    $v$     & scaling term for log-odds of CAC > 0 \\
-    $\theta_j$     & log-odds of CAC > 0 for patient $i$ in measurement $j$ \\
+    $v$     & scaling term for log-odds of CAC\,$>$\,0 \\
+    $\theta_j$     & log-odds of CAC\,$>$\,0 for patient $i$ in measurement $j$ \\
     $\ell$ & expected population average age of onset \\
     $\ell_i$     & expected age of onset for patient $i$ \\
     $\sigma$     & standard deviation on each CAC measurement $y_j$ \\
@@ -275,15 +219,48 @@ Currently, the study of atherosclerosis involves a wide variety methods of model
     $\sigma_{l}$     & standard deviation on $\ell_{i}$ \\
     \bottomrule
   \end{tabular}
+  \caption{Glossary of variables used.}
   \label{tab:variableGlossary}
 \end{table}
 
-% \section{Acknowledgments} Hillard Kaplan, Michael Gurven, Gregory Thomas, Michael Miyamoto, Richard McElreath, Randall C. Thompson, Margaret Gatz, L. Samuel Wann, Adel H. Allam, Andrei Irimia, the HORUS team, and the Department of Human Behavior, Ecology and Culture at MPI-EVA provided valuable feedback on earlier versions of this analysis.
+\begin{table*}
+  \centering
+  \begin{tabular}{llrrrrrrrrrrrr}
+    \toprule
+    \input{tableModelBiasMeans.tex}
+    \bottomrule
+  \end{tabular}
+  \caption{Estimation bias (mean and standard error) over all \numStudies{} studies, in years. Statistical models that include individual-specific trajectories (subscript $i$) calculate bias estimates using the true $t_{0i}$ and $d_i$ values of each patient; models without individual-specific trajectories estimate population-level parameters, which are compared against the true population average $t_0$ and $d$ within each simulated study. Biases on ``sex'' represent the estimated average difference between men and women minus the true generative difference (or lack thereof). Since $\mathrm{E}(t_{0i}) = \ell_i$, logistic regression models use $\ell_i$ or $\ell$ as equivalents to $t_{0i}$ and $t_0$. Estimates in boldface are statistically distinct from zero bias by two-tailed $t$-tests with $\alpha = 0.001$.}
+  \label{tab:modelBiasMeans}
+\end{table*}
 
-\section{Supplementary Materials}
+\section{Discussion}
 
-All statistical models and simulation data and software is available at \href{https://github.com/babeheim/linked-calcium-growth}{https://github.com/babeheim/linked-calcium-growth} under the CC BY-NC-SA 4.0 license.
+Generally speaking, logistic regression and mixture models out-perform log-linear models in estimating population and individual-specific ages of CAC onset, and models that explicitly account for individual patient trajectories out-perform those that do not. These advantages are most pronounced in cross-sectional study designs, which constitute the vast majority of existing CAC datasets.
 
-\printbibliography[title={References}]
+Because logistic regression models are able to accurately utilize the full set of patient observations, including those from the period before CAC growth begins, they are able to characterize the onset of atherosclerosis more accurately than log-linear models, which must either exclude patients observed with zero CAC or incorrectly alter these scores to accomodate the logarithmic scale, producing large estimation errors.
+
+Although large biases in estimation are observed in some models in patient-specific CAC onset and progression, substantially smaller, unsystematic errors are found in estimation of the impact of sex. As a proxy for other risk factors such as smoking, obesity and physical activity, this covariate's predictive value is thus less likely to be altered significantly by choice of model in realistic datasets.
+
+While the innovations in model design described above show marked improvements in estimation accuracy, they come with increased costs, in terms of model complexity and computation time, and successful posterior updating of the full linked-hurdle log-normal may not be feasible for very large samples of patients. However, Table \ref{tab:modelBiasMeans} indicates that estimation performance can be improved for specific parameters without the use of the full linked hurdle-lognormal model: for parameter $d$, the ln(CAC\,$|$\,CAC\,$>$\,0)$_i$ model is, on average, less biased than either standard log-linear model, and for $t_0$, the logistic regression models with or without individual trajectories are both very accurate.
+
+More generally, although the simulation studies presented here cover a broad range of realistic epidemiological scenarios, they are strictly limited to the context of the generative model described by Equations \ref{eq:model} and \ref{eq:modelIntegral}. The true process of CAC onset and progression is necessarily more complex, and is only part of the larger process of coronary atherosclerosis, which can be seen as beginning with arterial lesions, and progress to stenosis and vascular occlusion even in the absence of CAC \cite{kelly2008angiography, gottlieb2010absence, nakahara2017calcification, gabriel2018zero}. Incorporating more physiological details, such as the process of soft plaque accumulation prior to calcification, plaque density and stability \cite{shioi2018plaque} or the site-specific formation of individual calcified plaques \cite{berman2016beyond}, can potentially lead to further modelling innovations, and consequently greater improvements in estimation accuracy.
+
+\section{Conclusion}
+
+Currently, the study of atherosclerosis involves a wide variety methods of modelling the CAC score, with multiple statistical designs employed even within the same study. Both because of this awkwardness, and because the CAC score only suimmarizes the underlying distribution of calcified plaque, some have suggested alternative metrics to studying atherosclerosis progression \cite{berman2016beyond, blaha2016improving}. However, the above computational meta-analysis shows the current statistical approaches to CAC modelling have substantial structural biases, tending to represent atherosclerotic growth as beginning earlier and progressing slower than it really does. Modifications to these models that recognize patient-specific growth trajectories are substantially more accurate in realistic simulation studies with both longitudinal and cross-sectional designs, and so we can expect such models to similarly out-perform traditional methods in the analysis of real patient data.
+
+\subsection*{Acknowledgments}
+
+Hillard Kaplan, Michael Gurven, Gregory Thomas, Michael Miyamoto, Richard McElreath, Cody Ross, Randall C. Thompson, Margaret Gatz, L. Samuel Wann, Adel H. Allam \& Andrei Irimia provided valuable feedback on earlier versions of this analysis.
+
+\subsection*{Supplementary materials}
+
+All statistical models and simulation data and software are available at \href{https://github.com/babeheim/linked-calcium-growth}{https://github.com/babeheim/linked-calcium-growth}.
+
+\newpage
+
+\bibliographystyle{apsrev4-1} % bibtex requires a style
+\bibliography{references} % pointing to references.bib
 
 \end{document}

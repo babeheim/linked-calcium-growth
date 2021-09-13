@@ -215,8 +215,8 @@ polygon(c(out$t0_ind_sigma, rev(out$t0_ind_sigma)),
 
 abline(h = 0, lty = 2)
 
-text(2.5, -1.8, "ln(CAC|CAC>0)")
-text(1.25, -2.5, "ln(CAC+1)", col = "red")
+text(2.5, -1.5, "ln(CAC$|$CAC$>$0)")
+text(1.25, -2.5, "ln(CAC$+$1)", col = "red")
 
 plot(out$t0_ind_sigma, out$d_bias_mean, type = "l",
   xlab = "$\\sigma_{t0}$ onset variability (years)", ylab = "$d$ doubling-time bias (years)",
@@ -233,8 +233,8 @@ polygon(c(out$t0_ind_sigma, rev(out$t0_ind_sigma)),
 
 abline(h = 0, lty = 2)
 
-text(2.5, 0.3, "ln(CAC|CAC>0)")
-text(1.25, 0.45, "ln(CAC+1)", col = "red")
+text(2.5, 0.2, "ln(CAC$|$CAC$>$0)")
+text(1.25, 0.5, "ln(CAC$+$1)", col = "red")
 
 dev.off()
 
